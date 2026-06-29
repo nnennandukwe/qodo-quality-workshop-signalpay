@@ -1,0 +1,20 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.8
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.9.2
+    hooks:
+      - id: bandit
+        args: ["-q", "-r", "src"]
+        pass_filenames: false
+  - repo: local
+    hooks:
+      - id: conventional-commit
+        name: conventional commit message
+        entry: uv run python scripts/check_commit_msg.py
+        language: system
+        stages: [commit-msg]

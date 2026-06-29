@@ -1,0 +1,7 @@
+{
+  "include": ["src"],
+  "exclude": [".venv", "dist"],
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "strict",
+  "reportMissingTypeStubs": false
+}

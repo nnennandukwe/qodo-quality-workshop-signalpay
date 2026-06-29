@@ -1,0 +1,230 @@
+# Qodo Quality-First AI Coding Workshop
+
+This repo is the source of truth for a one-hour hands-on workshop on building a quality-first AI coding workflow with Qodo.
+
+You will practice this loop:
+
+```text
+plan -> pull Qodo rules -> use repo skills -> write tests -> implement -> run local gates -> open PR -> Qodo review -> PR Resolver remediation
+```
+
+## What You Are Building
+
+This is a self-contained FastAPI payments API used to practice quality-first AI coding.
+
+It has no separate frontend and no external service dependencies. You will interact with the app through FastAPI's browser docs at `/docs`.
+
+The goal is not to build a production payment system. The goal is to practice a repeatable workflow:
+
+```text
+plan -> pull Qodo rules -> write tests -> implement -> run local gates -> open PR -> review with Qodo -> resolve findings
+```
+
+## Workshop App
+
+Run the app locally:
+
+```bash
+make setup
+make run
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Also available:
+
+```text
+http://127.0.0.1:8000/redoc
+http://127.0.0.1:8000/openapi.json
+```
+
+This workshop app is API-first. The browser UI is FastAPI `/docs`, not a separate React dashboard.
+
+## Choose Your Lane
+
+- **Hands-on:** fork, clone, configure Qodo, make the change, open a PR.
+- **Pair/observe:** follow the README and inspect the gates while someone else codes.
+- **Async later:** use this repo as a complete guided workshop after the session.
+
+## One-Hour Flow
+
+| Time | Activity |
+| --- | --- |
+| 0-5 min | Frame quality-first AI coding: deterministic gates + Qodo rules/skills + PR review. |
+| 5-10 min | Open this README, choose a lane, fork and clone. |
+| 10-15 min | Run `make doctor`; let your coding agent troubleshoot setup. |
+| 15-22 min | Sign into Qodo, connect GitHub, generate a Qodo API key. |
+| 22-28 min | Configure Qodo Skills safely with agent help. |
+| 28-34 min | Run Qodo rules and repo skills before coding. |
+| 34-43 min | Write behavior tests and implement the payment workflow change. |
+| 43-50 min | Run lint, typecheck, static analysis, tests, and pre-commit. |
+| 50-56 min | Commit, push, open PR, inspect Qodo review. |
+| 56-60 min | Run PR Resolver or inspect the prepared remediation flow. |
+
+## Prerequisites
+
+Read [docs/00-prerequisites.md](docs/00-prerequisites.md).
+
+Required:
+
+- Git
+- GitHub account
+- GitHub CLI authenticated with `gh auth login`
+- Python 3.11+
+- `uv`
+- Node.js and npm
+- A coding agent such as Codex, Claude Code, Cursor, Windsurf, or Cline
+- Qodo account
+
+## Setup
+
+```bash
+git clone <your-fork-url>
+cd qodo-quality-workshop-signalpay
+make doctor
+make setup
+make verify
+```
+
+If setup fails, paste the `make doctor` output into your coding agent and ask it to fix your local environment.
+
+## Qodo Setup
+
+1. Sign into the [Qodo portal](https://app.qodo.ai/).
+2. Connect GitHub to your fork.
+3. Generate an API key from the Qodo portal.
+4. Ask your coding agent to configure Qodo Skills.
+
+Read:
+
+- [docs/01-qodo-portal-github.md](docs/01-qodo-portal-github.md)
+- [docs/02-qodo-api-key-and-skills.md](docs/02-qodo-api-key-and-skills.md)
+
+Install official Qodo Skills:
+
+```bash
+npx skills add qodo-ai/qodo-skills/skills
+```
+
+Install repo-local workshop skills:
+
+```bash
+make install-skills
+```
+
+## Copy/Paste Agent Prompts
+
+### Setup Prompt
+
+```text
+Help me configure this repo for the Qodo workshop.
+
+I have a Qodo API key from the Qodo portal.
+
+Requirements:
+- Do not commit the API key.
+- Store it only in a safe local developer location or environment variable.
+- Install or verify Qodo Skills.
+- Confirm qodo-get-rules can fetch rules for this repository.
+- If my local environment is missing dependencies, diagnose and fix them.
+```
+
+### Planning Prompt
+
+```text
+Use the repo-local workshop planning skill to turn this task into:
+1. a high-level implementation plan
+2. a build-session execution plan
+
+Use the repo standards, Qodo rules, and payment-idempotency skill as constraints.
+Do not write code yet.
+```
+
+### TDD Prompt
+
+```text
+Use the workshop TDD/BDD skill.
+
+Write the smallest failing tests first for the payment workflow change.
+Cover one happy path and at least one failure path.
+Do not implement production code until the failing tests prove the behavior gap.
+```
+
+### Verification Prompt
+
+```text
+Run the full local verification ladder.
+
+If anything fails, classify the failure as formatting, linting, type checking, security/static analysis, behavior, or repo guideline compliance.
+Fix the issue without weakening the gate.
+Re-run verification.
+```
+
+## Hands-On Task
+
+Add a refund or capture-retry workflow while preserving:
+
+- idempotency
+- auth scope checks
+- event contract shape
+- one-event-per-idempotency-key behavior
+
+Read [docs/03-run-rules-before-coding.md](docs/03-run-rules-before-coding.md), then start from:
+
+- [.plan/workshop-payment-task/plan.md](.plan/workshop-payment-task/plan.md)
+- [.plan/workshop-payment-task/build-session-execution-plan.md](.plan/workshop-payment-task/build-session-execution-plan.md)
+
+## Local Verification Gates
+
+Run individual gates:
+
+```bash
+make lint
+make typecheck
+make security
+make test
+make semgrep
+```
+
+Run the full ladder:
+
+```bash
+make verify
+```
+
+Read [docs/04-local-verification-gates.md](docs/04-local-verification-gates.md).
+
+## Open a PR and Let Qodo Review
+
+```bash
+git checkout -b feat/payment-workflow
+git add .
+git commit -m "feat(payments): add refund workflow"
+git push -u origin feat/payment-workflow
+gh pr create --fill
+```
+
+Read:
+
+- [docs/05-open-pr-and-qodo-review.md](docs/05-open-pr-and-qodo-review.md)
+- [docs/06-pr-resolver-remediation.md](docs/06-pr-resolver-remediation.md)
+
+## Slides
+
+The live companion deck is linked from [slides/README.md](slides/README.md).
+
+Core idea:
+
+> The agent is not just writing code. It is following a structured quality system.
+
+## Fallbacks
+
+- Local setup failing? Paste `make doctor` output into your coding agent.
+- Qodo API setup failing? Continue with repo skills, local gates, and the instructor demo.
+- Qodo review delayed? Use the prepared instructor PR.
+- Behind the room? Continue asynchronously from this README.
+

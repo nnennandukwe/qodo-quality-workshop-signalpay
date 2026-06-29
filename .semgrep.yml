@@ -1,0 +1,20 @@
+rules:
+  - id: signalpay-idempotency-bypass
+    message: Payment capture handlers must check an Idempotency-Key before mutating payment state.
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: |
+          def $FUNC(...):
+              ...
+              payment["status"] = "captured"
+              ...
+      - pattern-not-inside: |
+          def $FUNC(..., idempotency_key: ..., ...):
+              ...
+              if not idempotency_key:
+                  ...
+              ...
+              payment["status"] = "captured"
+              ...
+
