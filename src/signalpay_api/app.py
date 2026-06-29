@@ -123,3 +123,44 @@ def capture_payment(
     payment_events.append(dict(event))
     idempotency_results[result_key] = deepcopy(payment)
     return payment
+
+
+@app.post("/payments/{payment_id}/refund", response_model=Payment, response_model_by_alias=True)
+def refund_payment(
+    payment_id: str,
+    authorization: Annotated[str | None, Header(alias="Authorization")] = None,
+    idempotency_key: Annotated[
+        str | None,
+        Header(alias="Idempotency-Key"),
+    ] = None,
+) -> dict[str, Any]:
+    require_principal(authorization, required_scope="payments:refund")
+    if not idempotency_key:
+        raise HTTPException(status_code=400, detail="Idempotency-Key header is required")
+    if payment_id not in payments:
+        raise HTTPException(status_code=404, detail="payment not found")
+
+    result_key = ("refund", payment_id, idempotency_key)
+    if result_key in idempotency_results:
+        return idempotency_results[result_key]
+
+    payment = payments[payment_id]
+    if payment["status"] != "captured":
+        raise HTTPException(
+            status_code=409,
+            detail=f"payment cannot be refunded from status {payment['status']}",
+        )
+
+    payment["status"] = "refunded"
+
+    event = build_payment_event(
+        event_type="payment.refunded",
+        payment_id=payment["paymentId"],
+        customer_id=payment["customerId"],
+        amount=payment["amount"],
+        currency=payment["currency"],
+        status="refunded",
+    )
+    payment_events.append(dict(event))
+    idempotency_results[result_key] = deepcopy(payment)
+    return payment
