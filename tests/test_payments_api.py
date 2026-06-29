@@ -4,15 +4,18 @@ from signalpay_api.app import app, payment_events, reset_state
 
 
 def client() -> TestClient:
+    """Create a fresh API client with reset workshop state."""
     reset_state()
     return TestClient(app)
 
 
 def auth(token: str = "sp_live_payments_capture") -> dict[str, str]:
+    """Build an Authorization header for a workshop token."""
     return {"Authorization": f"Bearer {token}"}
 
 
 def capture_payment(api: TestClient, payment_id: str = "pay_1001") -> dict[str, object]:
+    """Capture a payment for refund workflow setup."""
     response = api.post(
         f"/payments/{payment_id}/capture",
         headers=auth() | {"Idempotency-Key": f"cap-{payment_id}-001"},
@@ -23,14 +26,17 @@ def capture_payment(api: TestClient, payment_id: str = "pay_1001") -> dict[str, 
 
 
 def refund_auth() -> dict[str, str]:
+    """Build an Authorization header for the refund-scoped token."""
     return auth("sp_live_payments_refund")
 
 
 def refund_events() -> list[dict[str, object]]:
+    """Return only emitted refund events."""
     return [event for event in payment_events if event["type"] == "payment.refunded"]
 
 
 def test_get_payment_returns_contract_shape() -> None:
+    """GET /payments returns camelCase payment fields."""
     response = client().get("/payments/pay_1001", headers=auth("sp_live_payments_reader"))
 
     assert response.status_code == 200
@@ -44,6 +50,7 @@ def test_get_payment_returns_contract_shape() -> None:
 
 
 def test_capture_requires_an_idempotency_key() -> None:
+    """Capture rejects a missing Idempotency-Key header."""
     response = client().post("/payments/pay_1001/capture", headers=auth())
 
     assert response.status_code == 400
@@ -51,6 +58,7 @@ def test_capture_requires_an_idempotency_key() -> None:
 
 
 def test_capture_is_idempotent_and_emits_one_event() -> None:
+    """Capture replays the first response and emits one event per key."""
     api = client()
     headers = auth() | {"Idempotency-Key": "cap-pay-1001-001"}
 
@@ -67,6 +75,7 @@ def test_capture_is_idempotent_and_emits_one_event() -> None:
 
 
 def test_capture_requires_capture_scope() -> None:
+    """Capture rejects tokens without the payments:capture scope."""
     response = client().post(
         "/payments/pay_1001/capture",
         headers=auth("sp_live_payments_reader") | {"Idempotency-Key": "cap-denied-001"},
@@ -77,6 +86,7 @@ def test_capture_requires_capture_scope() -> None:
 
 
 def test_rejects_sessions_for_other_token_families() -> None:
+    """Payment routes reject tokens for a different audience."""
     response = client().get(
         "/payments/pay_1001",
         headers=auth("sp_live_settlement_reader"),
@@ -87,6 +97,7 @@ def test_rejects_sessions_for_other_token_families() -> None:
 
 
 def test_refund_captured_payment_returns_contract_shape_and_emits_event() -> None:
+    """Refunding a captured payment returns the contract shape and emits one event."""
     api = client()
     capture_payment(api)
 
@@ -117,6 +128,7 @@ def test_refund_captured_payment_returns_contract_shape_and_emits_event() -> Non
 
 
 def test_refund_is_idempotent_and_emits_one_refunded_event() -> None:
+    """Refund replays the first response and emits one refunded event per key."""
     api = client()
     capture_payment(api)
     headers = refund_auth() | {"Idempotency-Key": "ref-pay-1001-002"}
@@ -132,6 +144,7 @@ def test_refund_is_idempotent_and_emits_one_refunded_event() -> None:
 
 
 def test_refund_requires_an_idempotency_key_before_mutation_or_event() -> None:
+    """Refund rejects a missing Idempotency-Key before mutation or event emission."""
     api = client()
     capture_payment(api)
 
@@ -145,6 +158,7 @@ def test_refund_requires_an_idempotency_key_before_mutation_or_event() -> None:
 
 
 def test_refund_requires_refund_scope_before_mutation_or_event() -> None:
+    """Refund rejects tokens without payments:refund before mutation or event emission."""
     api = client()
     capture_payment(api)
 
@@ -161,6 +175,7 @@ def test_refund_requires_refund_scope_before_mutation_or_event() -> None:
 
 
 def test_refund_rejects_non_captured_payment_before_mutation_or_event() -> None:
+    """Refund rejects non-captured payments before mutation or event emission."""
     api = client()
 
     response = api.post(
@@ -173,3 +188,39 @@ def test_refund_rejects_non_captured_payment_before_mutation_or_event() -> None:
     assert response.json()["detail"] == "payment must be captured before refund"
     assert payment.json()["status"] == "pending"
     assert refund_events() == []
+
+
+def test_refund_unknown_payment_returns_404_without_event() -> None:
+    """Refund rejects unknown payment IDs without emitting an event."""
+    response = client().post(
+        "/payments/pay_missing/refund",
+        headers=refund_auth() | {"Idempotency-Key": "ref-pay-missing-001"},
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "payment not found"
+    assert payment_events == []
+
+
+def test_capture_rejects_refunded_payment_without_emitting_event() -> None:
+    """Capture fails closed after a payment has been refunded."""
+    api = client()
+    capture_payment(api)
+
+    refund = api.post(
+        "/payments/pay_1001/refund",
+        headers=refund_auth() | {"Idempotency-Key": "ref-pay-1001-003"},
+    )
+    event_count_before = len(payment_events)
+
+    response = api.post(
+        "/payments/pay_1001/capture",
+        headers=auth() | {"Idempotency-Key": "cap-pay-1001-after-refund-001"},
+    )
+    payment = api.get("/payments/pay_1001", headers=auth("sp_live_payments_reader"))
+
+    assert refund.status_code == 200
+    assert response.status_code == 409
+    assert response.json()["detail"] == "cannot capture a refunded payment"
+    assert payment.json()["status"] == "refunded"
+    assert len(payment_events) == event_count_before

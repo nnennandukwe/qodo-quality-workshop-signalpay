@@ -64,5 +64,5 @@ Use one short build session to implement the refund workflow under quality gates
 ## Completion Notes
 - Local verification: `uv run pytest tests/test_payments_api.py -q` passed; `make verify` passed.
 - Repo rules applied: `PAY-001`, `PAY-002`, `PAY-003`, `PAY-004`, `PAY-005`, `PAY-006`, `PAY-007`, `PAY-009`, `PAY-010`
-- Qodo review: pending PR review.
-- Remediation: no local findings after verification.
+- Qodo review: PR #4 found six Qodo issues.
+- Remediation: addressed durable idempotency storage, required docstrings, refunded recapture guard, explicit idempotency-key checks, and unknown-payment refund coverage.
