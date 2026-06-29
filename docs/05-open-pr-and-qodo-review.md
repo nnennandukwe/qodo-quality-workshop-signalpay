@@ -12,6 +12,15 @@ git push -u origin feat/payment-workflow
 gh pr create --fill
 ```
 
+## Checkpoint
+
+You are ready for review when:
+
+- the branch is pushed to your fork
+- the PR is open against the workshop repo
+- local verification has passed before Qodo review starts
+- the PR description includes the selected `PAY-*` rules and verification evidence
+
 ## What to Look For
 
 In the Qodo review, inspect:
@@ -26,4 +35,3 @@ In the Qodo review, inspect:
 ## Principle
 
 The PR gate should not be the first time quality is checked. It should be the independent review layer after planning, tests, and local deterministic gates.
-

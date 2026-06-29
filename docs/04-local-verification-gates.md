@@ -13,6 +13,15 @@ Local gates are the cheapest useful place to catch deterministic issues.
 | Semgrep | `make semgrep` | Workshop-specific static analysis |
 | Full ladder | `make verify` | All local gates |
 
+## Checkpoint
+
+You are ready to open a PR when:
+
+- targeted tests for the changed behavior pass
+- `make verify` passes without disabling or loosening any gate
+- any earlier failure is classified and fixed in the implementation or tests
+- your notes or PR description include the verification command you ran
+
 ## Agent Prompt
 
 ```text
@@ -26,4 +35,3 @@ Re-run verification.
 ## Principle
 
 Qodo does not replace deterministic gates. Qodo adds context-aware review on top of tests, linters, type checks, and static analysis.
-

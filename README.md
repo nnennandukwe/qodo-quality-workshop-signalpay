@@ -65,6 +65,31 @@ This workshop app is API-first. The browser UI is FastAPI `/docs`, not a separat
 | 50-56 min | Commit, push, open PR, inspect Qodo review. |
 | 56-60 min | Run PR Resolver or inspect the prepared remediation flow. |
 
+## Quality Gate Checkpoints
+
+Use these checkpoints to know what you have completed at each step. Each gate
+should leave behind visible proof that the workflow is moving forward.
+
+- **Setup gate:** `make doctor`, `make setup`, and starter `make verify` run
+  successfully. You have a working local repo before asking an agent to change
+  application behavior.
+- **Qodo access gate:** your fork is connected to Qodo, your API key is stored
+  outside git, and official plus repo-local skills are installed or documented
+  as unavailable. You have a review layer ready without committing credentials.
+- **Standards gate:** the relevant `PAY-*` rules are selected, linked rule docs
+  are read, repo skills are identified, and optional Qodo rule status is
+  recorded. You have turned the task into explicit quality constraints.
+- **Planning and TDD gate:** the high-level plan, build-session execution plan,
+  and smallest useful failing behavior tests are identified or written. You
+  have made the expected behavior observable before production code changes.
+- **Local verification gate:** targeted tests and `make verify` pass without
+  disabling Ruff, Pyright, Bandit, Pytest, Semgrep, or commit checks. You have
+  deterministic evidence that the change preserves the local contract.
+- **PR review and remediation gate:** the PR is open, Qodo findings are
+  inspected, fixes or deferrals are documented, and `make verify` is rerun after
+  remediation. You have completed the review loop rather than stopping at a
+  passing local run.
+
 ## Prerequisites
 
 Read [docs/00-prerequisites.md](docs/00-prerequisites.md).
@@ -145,6 +170,16 @@ Read [docs/03-run-rules-before-coding.md](docs/03-run-rules-before-coding.md), t
 
 - [.plan/workshop-payment-task/plan.md](.plan/workshop-payment-task/plan.md)
 - [.plan/workshop-payment-task/build-session-execution-plan.md](.plan/workshop-payment-task/build-session-execution-plan.md)
+
+## Definition of Done
+
+The workshop task is complete when you have a small PR that includes:
+
+- selected repo-local rules and optional Qodo rule status
+- behavior tests and verification evidence
+- a passing `make verify` run without weakened gates
+- Qodo review evidence or the documented fallback path
+- remediation notes for fixed or intentionally deferred findings
 
 ## Copy/Paste Agent Prompts
 

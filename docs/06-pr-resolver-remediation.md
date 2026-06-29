@@ -30,6 +30,15 @@ Claude Code:
 - reply to inline comments
 - post a remediation summary
 
+## Checkpoint
+
+You are done with remediation when:
+
+- every Qodo finding is fixed or explicitly deferred with a reason
+- any PR Resolver changes are reviewed before they are kept
+- `make verify` passes again after remediation
+- the PR includes a short summary of what changed after review
+
 ## Human Judgment
 
 You are still accountable for the code. Review the proposed fixes before merge and rerun:
@@ -37,4 +46,3 @@ You are still accountable for the code. Review the proposed fixes before merge a
 ```bash
 make verify
 ```
-
