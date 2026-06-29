@@ -128,7 +128,7 @@ Your task is to add one small payment workflow: either a refund workflow or capt
 
 This is intentionally a small change with production-shaped risk. Payment mutations are where AI-generated code can look correct while quietly breaking system guarantees. A retry can emit a duplicate event, a missing idempotency key can create duplicate work, an auth check can happen after state changes, or a response can drift from the public API contract.
 
-The point of this exercise is not the refund or retry feature by itself. The point is to practice making an agent work inside a quality system before it writes code. You will force the agent to read local rules, select the `PAY-*` standards that apply, use the payment-idempotency skill, write behavior tests first, run deterministic gates, and then compare the result with Qodo review feedback.
+The point of this exercise is to practice making an agent work inside a quality system before it writes code. You will force the agent to read local rules, select the `PAY-*` standards that apply, use the payment-idempotency skill, write behavior tests first, run deterministic gates, and then compare the result with Qodo review feedback.
 
 By the end, you should be able to see the difference between "the agent changed files" and "the agent produced a change that preserved the system contract." The expected output is a small PR with tests, verification evidence, and a review/remediation loop, not a large feature.
 
@@ -168,7 +168,7 @@ Requirements:
 ### Planning Prompt
 
 ```text
-Use the repo-local workshop planning skill to turn the Hands-On Task above into:
+Use the repo-local workshop planning skill to turn the Hands-On Task in README.md into:
 1. a high-level implementation plan
 2. a build-session execution plan
 
@@ -236,10 +236,6 @@ Read:
 ## Slides
 
 The live companion deck is linked from [slides/README.md](slides/README.md).
-
-Core idea:
-
-> The agent is not just writing code. It is following a structured quality system.
 
 ## Fallbacks
 
