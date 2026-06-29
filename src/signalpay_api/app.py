@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
+from pathlib import Path
 from typing import Annotated, Any
 
 from fastapi import FastAPI, Header, HTTPException
@@ -38,7 +40,46 @@ INITIAL_PAYMENTS: dict[str, dict[str, Any]] = {
 
 payments: dict[str, dict[str, Any]] = deepcopy(INITIAL_PAYMENTS)
 payment_events: list[dict[str, Any]] = []
-idempotency_results: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+_IDEMPOTENCY_STORE_PATH = Path(
+    ".signalpay_idempotency_store.json"
+)
+
+
+def _load_idempotency_results() -> dict[str, dict[str, Any]]:
+    """Load idempotency results from durable storage.
+
+    This repository uses a file-backed store to keep the workshop API
+    self-contained while preventing duplicate side effects across process
+    restarts.
+    """
+
+    try:
+        data = json.loads(_IDEMPOTENCY_STORE_PATH.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {}
+    except json.JSONDecodeError:
+        return {}
+
+    if not isinstance(data, dict):
+        return {}
+
+    results: dict[str, dict[str, Any]] = {}
+    for key, value in data.items():
+        if isinstance(key, str) and isinstance(value, dict):
+            results[key] = value
+    return results
+
+
+def _persist_idempotency_results(results: dict[str, dict[str, Any]]) -> None:
+    """Persist idempotency results to durable storage."""
+
+    tmp_path = _IDEMPOTENCY_STORE_PATH.with_suffix(".tmp")
+    tmp_path.write_text(json.dumps(results, indent=2, sort_keys=True), encoding="utf-8")
+    tmp_path.replace(_IDEMPOTENCY_STORE_PATH)
+
+
+idempotency_results: dict[str, dict[str, Any]] = _load_idempotency_results()
 
 app = FastAPI(
     title="SignalPay Payments API",
@@ -56,6 +97,10 @@ def reset_state() -> None:
     payments.update(deepcopy(INITIAL_PAYMENTS))
     payment_events.clear()
     idempotency_results.clear()
+    try:
+        _IDEMPOTENCY_STORE_PATH.unlink()
+    except FileNotFoundError:
+        pass
 
 
 def require_principal(
@@ -99,17 +144,25 @@ def capture_payment(
         Header(alias="Idempotency-Key"),
     ] = None,
 ) -> dict[str, Any]:
+    """Capture an authorized payment.
+
+    Uses an idempotency key to ensure a single capture event is emitted per key.
+    """
+
     require_principal(authorization, required_scope="payments:capture")
     if not idempotency_key:
         raise HTTPException(status_code=400, detail="Idempotency-Key header is required")
     if payment_id not in payments:
         raise HTTPException(status_code=404, detail="payment not found")
 
-    result_key = ("capture", payment_id, idempotency_key)
+    result_key = f"capture:{payment_id}:{idempotency_key}"
     if result_key in idempotency_results:
         return idempotency_results[result_key]
 
     payment = payments[payment_id]
+    if payment["status"] == "refunded":
+        raise HTTPException(status_code=409, detail="cannot capture a refunded payment")
+
     payment["status"] = "captured"
 
     event = build_payment_event(
@@ -122,6 +175,7 @@ def capture_payment(
     )
     payment_events.append(dict(event))
     idempotency_results[result_key] = deepcopy(payment)
+    _persist_idempotency_results(idempotency_results)
     return payment
 
 
@@ -134,13 +188,19 @@ def refund_payment(
         Header(alias="Idempotency-Key"),
     ] = None,
 ) -> dict[str, Any]:
+    """Refund a captured payment.
+
+    Enforces idempotency via a durable store and emits a single
+    `payment.refunded` event on the first successful request.
+    """
+
     require_principal(authorization, required_scope="payments:refund")
     if not idempotency_key:
         raise HTTPException(status_code=400, detail="Idempotency-Key header is required")
     if payment_id not in payments:
         raise HTTPException(status_code=404, detail="payment not found")
 
-    result_key = ("refund", payment_id, idempotency_key)
+    result_key = f"refund:{payment_id}:{idempotency_key}"
     if result_key in idempotency_results:
         return idempotency_results[result_key]
 
@@ -160,4 +220,5 @@ def refund_payment(
     )
     payment_events.append(dict(event))
     idempotency_results[result_key] = deepcopy(payment)
+    _persist_idempotency_results(idempotency_results)
     return payment
