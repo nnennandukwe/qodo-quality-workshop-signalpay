@@ -137,6 +137,8 @@ def test_refund_requires_an_idempotency_key() -> None:
     assert response.status_code == 400
     assert response.json()["detail"] == "Idempotency-Key header is required"
     assert refund_events() == []
+    state = api.get("/payments/pay_1001", headers=auth("sp_live_payments_reader"))
+    assert state.json()["status"] == "captured"
 
 
 def test_refund_requires_refund_scope() -> None:
@@ -181,10 +183,15 @@ def test_refund_unknown_payment_returns_404() -> None:
 
 
 def test_refund_rejects_wrong_audience() -> None:
-    response = client().post(
+    api = client()
+
+    response = api.post(
         "/payments/pay_1001/refund",
         headers=auth("sp_live_settlement_reader") | {"Idempotency-Key": "ref-aud-001"},
     )
 
     assert response.status_code == 401
     assert response.json()["detail"] == "session token is not valid for audience payments-api"
+    assert refund_events() == []
+    state = api.get("/payments/pay_1001", headers=auth("sp_live_payments_reader"))
+    assert state.json()["status"] == "authorized"
