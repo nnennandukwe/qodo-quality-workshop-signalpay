@@ -9,3 +9,8 @@ dist/
 .env
 .qodo/
 .vscode/
+
+# Locally installed agent skills (regenerated via `make install-skills` and `npx skills add ...`)
+.agents/skills/*/
+.claude/
+skills-lock.json
