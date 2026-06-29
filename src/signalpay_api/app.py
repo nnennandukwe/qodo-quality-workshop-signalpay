@@ -123,3 +123,25 @@ def capture_payment(
     payment_events.append(dict(event))
     idempotency_results[result_key] = deepcopy(payment)
     return payment
+
+
+@app.post("/payments/{payment_id}/refund", response_model=Payment, response_model_by_alias=True)
+def refund_payment(payment_id: str) -> dict[str, Any]:
+    if payment_id not in payments:
+        raise HTTPException(status_code=404, detail="payment not found")
+
+    payment = payments[payment_id]
+    payment["status"] = "refunded"
+
+    payment_events.append(
+        {
+            "eventId": f"payment.refunded:{payment['paymentId']}",
+            "type": "payment.refunded",
+            "paymentId": payment["paymentId"],
+            "customerId": payment["customerId"],
+            "amount": payment["amount"],
+            "currency": payment["currency"],
+            "status": "refunded",
+        }
+    )
+    return payment
