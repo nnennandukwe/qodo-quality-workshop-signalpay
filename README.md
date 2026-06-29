@@ -225,6 +225,5 @@ Core idea:
 
 - Local setup failing? Paste `make doctor` output into your coding agent.
 - Qodo API setup failing? Continue with repo skills, local gates, and the instructor demo.
-- Qodo review delayed? Use the prepared instructor PR.
+- Qodo review delayed? Use the prepared instructor PR: [Instructor demo: red refund workflow gate](https://github.com/nnennandukwe/qodo-quality-workshop-signalpay/pull/1).
 - Behind the room? Continue asynchronously from this README.
-
