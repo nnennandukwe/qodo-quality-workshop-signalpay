@@ -20,6 +20,44 @@ The goal is not to build a production payment system. The goal is to practice a 
 plan -> read repo rules -> write tests -> implement -> run local gates -> open PR -> review with Qodo -> resolve findings
 ```
 
+## What This Repo Is Teaching
+
+This workshop is a small API wrapped in a quality system. Every directory is here to teach one part of quality-first AI coding:
+
+- make the task explicit before code changes
+- give the agent local standards it can read
+- give the agent skills that describe how to work
+- prove behavior with tests
+- catch deterministic issues with static analysis and local gates
+- use Qodo review as an independent review layer
+- remediate findings and verify again
+
+You can describe this as SDLC or ADLC quality control. The same standards show up before coding, during coding, and after coding:
+
+| Phase | Repo artifact | Teaching point |
+| --- | --- | --- |
+| Before coding | `AGENTS.md`, `.plan/`, `rules/`, `skills/` | Agents need intent, standards, and procedures before they generate code. |
+| During coding | `tests/`, `src/`, `.semgrep.yml`, `Makefile` | Behavior and static checks make quality observable while the change is still local. |
+| After coding | `.github/workflows/verify.yml`, PR, Qodo review, PR Resolver | CI and Qodo review add independent review and remediation after local verification. |
+
+Read the presenter-focused lesson in [docs/07-workshop-teaching-guide.md](docs/07-workshop-teaching-guide.md).
+
+## Repository Structure
+
+| Path | Purpose |
+| --- | --- |
+| `AGENTS.md` | Operating instructions for coding agents in this repo. |
+| `.plan/` | Planning templates and example plans that explain intent, risk, rules, tests, and execution order. |
+| `rules/` | Repo-local `PAY-*` quality rules that are always available to humans and agents. |
+| `skills/` | Repo-local agent procedures for planning, TDD, payment idempotency, failure-path testing, and review. |
+| `docs/` | Guided workshop lessons for setup, Qodo configuration, rules, gates, PR review, and remediation. |
+| `src/signalpay_api/` | The small FastAPI payment API used for the hands-on task. |
+| `tests/` | Behavior and structure tests that make the workshop contract visible. |
+| `.semgrep.yml` | Workshop-specific static analysis for payment mutation risks. |
+| `.github/workflows/verify.yml` | CI gate that reruns the local verification ladder on PRs. |
+
+The app is intentionally small so the quality system is easy to inspect. The teaching point is the loop around the code, not the size of the feature.
+
 ## Workshop App
 
 Run the app locally:
@@ -164,6 +202,23 @@ The default pre-coding context is committed in [rules/README.md](rules/README.md
 Qodo portal rules are optional enrichment. Do not block the workshop on portal
 rule setup.
 
+Repo-local rules are intentionally Markdown. That makes them readable by:
+
+- attendees
+- coding agents
+- reviewers
+- Qodo-hosted rule setup, when a team chooses to mirror or host the same standards in Qodo
+
+In the workshop, local rules are the baseline. Qodo-hosted rules and skills can carry the same quality expectations into review, but they are enrichment rather than a prerequisite.
+
+## Repo-Local Skills
+
+Repo-local skills are committed in [skills/](skills/). They teach the agent how to work inside the rules.
+
+For example, the `payment-idempotency` skill translates payment safety into concrete implementation checks: require `Idempotency-Key`, check auth before mutation, return the original response on retry, and avoid duplicate events.
+
+Use [skills/README.md](skills/README.md) to explain which skill belongs to each phase of the workflow.
+
 ## Hands-On Task: Payment Workflow Safety
 
 Your task is to add one small payment workflow: either a refund workflow or capture-retry handling. Choose one path for the workshop; do not try to build both.
@@ -187,6 +242,8 @@ Read [docs/03-run-rules-before-coding.md](docs/03-run-rules-before-coding.md), t
 
 - [.plan/workshop-payment-task/plan.md](.plan/workshop-payment-task/plan.md)
 - [.plan/workshop-payment-task/build-session-execution-plan.md](.plan/workshop-payment-task/build-session-execution-plan.md)
+
+When presenting this step, point out that `.plan/` is part of the lesson. The high-level plan explains intent and quality constraints. The build-session execution plan turns those constraints into an ordered agent workflow.
 
 ## Definition of Done
 
@@ -276,6 +333,17 @@ make verify
 
 Read [docs/04-local-verification-gates.md](docs/04-local-verification-gates.md).
 
+These gates catch deterministic issues early:
+
+- Ruff checks Python lint, imports, and maintainability.
+- Pyright catches type and interface drift.
+- Bandit checks common Python security risks.
+- Pytest proves API behavior.
+- Semgrep checks workshop-specific static-analysis patterns.
+- CI reruns the same ladder on PRs.
+
+Qodo review adds context-aware review after these gates; it does not replace them.
+
 ## Open a PR and Let Qodo Review
 
 ```bash
@@ -290,6 +358,8 @@ Read:
 
 - [docs/05-open-pr-and-qodo-review.md](docs/05-open-pr-and-qodo-review.md)
 - [docs/06-pr-resolver-remediation.md](docs/06-pr-resolver-remediation.md)
+
+In the Qodo review, distinguish evidence from configuration. It is fine to say this repo contains local rules and skills. Only say Qodo used a skill in review when the review surface shows evidence such as `Skill insights`, a visible skills/context section, or a Qodo comment that names the skill.
 
 ## Slides
 

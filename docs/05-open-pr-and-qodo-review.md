@@ -2,6 +2,10 @@
 
 Once local gates pass, open a pull request so Qodo can review the change in GitHub.
 
+The teaching point is that the PR is an independent review layer, not the first
+quality check. By this point, the change should already have selected rules,
+tests, local verification, and a clear PR description.
+
 ## Commands
 
 ```bash
@@ -31,6 +35,19 @@ In the Qodo review, inspect:
 - context used
 - remediation guidance
 - PR summary
+
+## Evidence Language
+
+Be specific about what the review proves:
+
+- Repo-local rules and skills are present when they are committed in this repo.
+- The agent used a local skill when the prompt, plan, or agent notes show that usage.
+- Qodo used a skill in review only when the review surface shows evidence such
+  as `Skill insights`, a visible skills/context section, or a Qodo comment that
+  names the skill.
+
+This keeps the workshop evidence-based. Do not collapse repo-local rules,
+Qodo-hosted rules, local skills, and review-stage skill evidence into one claim.
 
 ## Principle
 

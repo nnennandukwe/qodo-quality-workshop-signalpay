@@ -12,6 +12,7 @@ def test_workshop_docs_are_present() -> None:
         "docs/04-local-verification-gates.md",
         "docs/05-open-pr-and-qodo-review.md",
         "docs/06-pr-resolver-remediation.md",
+        "docs/07-workshop-teaching-guide.md",
         "docs/troubleshooting.md",
     ]
 
@@ -21,6 +22,7 @@ def test_workshop_docs_are_present() -> None:
 
 def test_workshop_skills_are_present() -> None:
     expected = [
+        "skills/README.md",
         "skills/workshop-plan-from-task/SKILL.md",
         "skills/workshop-tdd-bdd/SKILL.md",
         "skills/workshop-failure-path-testing/SKILL.md",
@@ -38,6 +40,8 @@ def test_planning_templates_are_present() -> None:
         ".plan/README.md",
         ".plan/templates/high-level-plan.md",
         ".plan/templates/build-session-execution-plan.md",
+        ".plan/workshop-education-docs/plan.md",
+        ".plan/workshop-education-docs/build-session-execution-plan.md",
         ".plan/workshop-payment-task/plan.md",
         ".plan/workshop-payment-task/build-session-execution-plan.md",
     ]

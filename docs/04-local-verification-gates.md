@@ -2,6 +2,10 @@
 
 Local gates are the cheapest useful place to catch deterministic issues.
 
+This step teaches early-and-often verification. Qodo review adds contextual
+feedback later, but deterministic issues should be caught before the PR is
+opened.
+
 ## Gates
 
 | Gate | Command | Purpose |
@@ -12,6 +16,22 @@ Local gates are the cheapest useful place to catch deterministic issues.
 | Pytest | `make test` | API behavior |
 | Semgrep | `make semgrep` | Workshop-specific static analysis |
 | Full ladder | `make verify` | All local gates |
+
+## Static Analysis in This Repo
+
+Static analysis is not one tool. It is a stack of checks with different jobs:
+
+- Ruff catches Python lint, import, naming, and maintainability issues.
+- Pyright catches type and interface drift.
+- Bandit catches common Python security risks.
+- Semgrep catches workshop-specific patterns such as unsafe payment mutation
+  behavior.
+- Pre-commit reruns selected checks before commits.
+- GitHub Actions runs `make verify` again on PRs.
+
+The teaching point is that no single gate understands the whole system. The
+workflow layers deterministic checks with behavior tests and then adds Qodo
+review for context-aware findings.
 
 ## Checkpoint
 
@@ -35,3 +55,6 @@ Re-run verification.
 ## Principle
 
 Qodo does not replace deterministic gates. Qodo adds context-aware review on top of tests, linters, type checks, and static analysis.
+
+Do not weaken a gate to keep the workshop moving. If a gate fails, treat the
+failure as useful feedback and fix the implementation, tests, or docs.

@@ -1,13 +1,19 @@
 # Build-Session Execution Plan Template
 
+Use this template to turn the high-level plan into one executable work session.
+It should be specific enough that a coding agent can follow the sequence without
+inventing the workflow.
+
 ## Summary
 - What will be completed in this session?
+- Teaching value: define the session boundary before editing starts.
 
 ## Starting State
 - Branch:
 - Current local verification:
 - Selected repo-local rule IDs:
 - Optional Qodo rules status:
+- Teaching value: the starting state separates known evidence from assumptions.
 
 ## Implementation Skill Handoff
 - Planning skill completed: `workshop-plan-from-task`
@@ -26,6 +32,7 @@
   - `workshop-guidelines-audit` before committing or opening the PR.
   - optional `workshop-pythonic-review` for changed Python code.
   - optional `qodo-pr-resolver` only after Qodo posts PR findings.
+- Teaching value: the handoff makes the next agent behavior explicit instead of relying on memory.
 
 ## Execution Steps
 1. Read `AGENTS.md` and `rules/README.md`.
@@ -41,19 +48,23 @@
 11. Commit with Conventional Commits.
 12. Push and open PR.
 13. Resolve Qodo findings after review.
+- Teaching value: the order is part of the quality system. Planning, rules, and tests come before implementation; remediation comes after review evidence.
 
 ## Test Plan
 - Targeted:
 - Full:
+- Teaching value: targeted tests prove the behavior change; full verification checks the repo contract.
 
 ## Risk Checks
 - Idempotency:
 - Auth scope:
 - Event contract:
 - Static analysis:
+- Teaching value: risk checks keep production-shaped payment concerns visible in a small workshop app.
 
 ## Completion Notes
 - What passed:
 - What was deferred:
 - Which repo rules were applied:
 - What Qodo found:
+- Teaching value: completion notes preserve evidence for the PR and for later learning.

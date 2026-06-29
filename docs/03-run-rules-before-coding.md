@@ -9,6 +9,24 @@ Bring quality expectations into the planning and implementation loop, not only t
 The planning output must route the attendee into the correct implementation
 skills before any tests or production code are written.
 
+This is the first major lesson in the workshop: the agent should not discover
+quality standards after it has already produced a diff. Rules and skills belong
+in the prompt context before coding starts.
+
+Repo-local rules are always available. Qodo-hosted rules can add review-stage
+coverage when configured, but they are not required to complete the learning
+loop.
+
+## What This Step Teaches
+
+| Artifact | Teaching value |
+| --- | --- |
+| `AGENTS.md` | The operating contract for agents in this repo. |
+| `rules/README.md` | The index that maps task types to `PAY-*` standards. |
+| Linked rule docs | The exact behavior and verification signal for each standard. |
+| `skills/payment-idempotency/SKILL.md` | The procedure that keeps payment mutation risk in working memory. |
+| `.plan/` | The place where selected rules become scenarios, tests, gates, and handoffs. |
+
 ## Prompt
 
 ```text
@@ -30,6 +48,10 @@ first implementation skill and includes the exact TDD prompt to run next.
 - `workshop-plan-from-task`
 - `workshop-tdd-bdd`
 - `payment-idempotency`
+
+Use `workshop-plan-from-task` first. It should produce a high-level plan and a
+build-session execution plan. The plan must then hand off to
+`workshop-tdd-bdd` so tests come before production code.
 
 ## Checkpoint
 
