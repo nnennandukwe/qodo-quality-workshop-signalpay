@@ -124,6 +124,23 @@ If setup fails, paste the `make doctor` output into your coding agent and ask it
 3. Generate an API key from the Qodo portal.
 4. Ask your coding agent to configure Qodo Skills.
 
+For normal workshop use, store the key in a local-only Qodo config file:
+
+```json
+{
+  "API_KEY": "sk-..."
+}
+```
+
+Save it at:
+
+```text
+~/.qodo/config.json
+```
+
+Qodo Skills default to the production Qodo API. Set `QODO_API_URL` in this
+file only if your instructor gives you a non-production Qodo API endpoint.
+
 Read:
 
 - [docs/01-qodo-portal-github.md](docs/01-qodo-portal-github.md)
