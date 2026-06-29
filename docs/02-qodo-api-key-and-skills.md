@@ -59,6 +59,17 @@ make install-skills
 
 This copies repo-local skills into `.agents/skills/` and `.claude/skills/`.
 
+## Rules Default
+
+The workshop does not require Qodo portal rules setup. The default rules are
+committed in:
+
+```text
+rules/README.md
+```
+
+Use `qodo-get-rules` only as optional enrichment when it is available.
+
 ## Agent Prompt
 
 ```text
@@ -66,6 +77,7 @@ Configure Qodo Skills for this repo using my Qodo API key.
 
 Do not commit the key.
 Use ~/.qodo/config.json or QODO_API_KEY.
-Then verify qodo-get-rules can fetch rules for this repository.
+Read AGENTS.md and rules/README.md.
+Select the relevant repo-local PAY-* rule IDs for the task.
+Optionally compare them with qodo-get-rules if Qodo rules are available.
 ```
-

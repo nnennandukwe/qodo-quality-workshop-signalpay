@@ -1,6 +1,7 @@
-# 03. Run Rules Before Coding
+# 03. Read Rules Before Coding
 
-Run Qodo rules before editing code so your agent starts with the right standards in context.
+Read repo-local rules before editing code so your agent starts with the right
+standards in context. Qodo portal rules are optional enrichment.
 
 ## Goal
 
@@ -9,12 +10,15 @@ Bring quality expectations into the planning and implementation loop, not only t
 ## Prompt
 
 ```text
-Before writing code, use Qodo rules and the repo skills to understand the quality standards for this task.
+Before writing code, read AGENTS.md and rules/README.md.
+Select the relevant PAY-* rule IDs and explain why each applies.
+Then read the linked rule documents and repo skills.
 
 Task:
 Add a refund or capture-retry workflow while preserving idempotency, auth scope checks, event contract shape, and one-event-per-idempotency-key behavior.
 
-After loading the rules, summarize which standards must guide the implementation.
+After selecting repo-local rules, optionally compare them with qodo-get-rules if Qodo rules are available.
+Summarize which standards must guide the implementation and tests.
 ```
 
 ## Local Skills to Use
@@ -27,8 +31,8 @@ After loading the rules, summarize which standards must guide the implementation
 
 Before coding, you should have:
 
-- Qodo rules loaded or a documented fallback if Qodo access is blocked
+- selected repo-local `PAY-*` rule IDs
+- optional Qodo rules loaded or documented as unavailable
 - a high-level plan
 - a build-session plan
 - failing tests identified or written
-

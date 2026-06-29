@@ -6,13 +6,25 @@ Add a payment workflow change, such as refund or capture retry handling, while p
 This is a workshop task. The goal is to practice the quality workflow more than to expand product scope.
 
 ## Skills Used
-- `qodo-get-rules`
+- `rules/README.md`
 - `workshop-plan-from-task`
 - `workshop-tdd-bdd`
 - `workshop-failure-path-testing`
 - `payment-idempotency`
 - `workshop-guidelines-audit`
+- optional `qodo-get-rules`
 - `qodo-pr-resolver`
+
+## Selected Repo Rules
+- `PAY-001`
+- `PAY-002`
+- `PAY-003`
+- `PAY-004`
+- `PAY-005`
+- `PAY-006`
+- `PAY-007`
+- `PAY-009`
+- `PAY-010`
 
 ## Scope
 - Add one small payment mutation endpoint or behavior.
@@ -40,6 +52,7 @@ Out of scope:
 - `make security`
 - `make semgrep`
 - `make verify`
+- repo-local rules audit
 - Qodo PR review
 
 ## Definition of Done
@@ -47,4 +60,3 @@ Out of scope:
 - Local gates pass.
 - Qodo findings are fixed or explicitly deferred with rationale.
 - The PR explains the verification evidence.
-

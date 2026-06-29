@@ -5,7 +5,7 @@ This repo is the source of truth for a one-hour hands-on workshop on building a 
 You will practice this loop:
 
 ```text
-plan -> pull Qodo rules -> use repo skills -> write tests -> implement -> run local gates -> open PR -> Qodo review -> PR Resolver remediation
+plan -> read repo rules -> use repo skills -> write tests -> implement -> run local gates -> open PR -> Qodo review -> PR Resolver remediation
 ```
 
 ## What You Are Building
@@ -17,7 +17,7 @@ It has no separate frontend and no external service dependencies. You will inter
 The goal is not to build a production payment system. The goal is to practice a repeatable workflow:
 
 ```text
-plan -> pull Qodo rules -> write tests -> implement -> run local gates -> open PR -> review with Qodo -> resolve findings
+plan -> read repo rules -> write tests -> implement -> run local gates -> open PR -> review with Qodo -> resolve findings
 ```
 
 ## Workshop App
@@ -54,12 +54,12 @@ This workshop app is API-first. The browser UI is FastAPI `/docs`, not a separat
 
 | Time | Activity |
 | --- | --- |
-| 0-5 min | Frame quality-first AI coding: deterministic gates + Qodo rules/skills + PR review. |
+| 0-5 min | Frame quality-first AI coding: deterministic gates + repo rules/skills + Qodo PR review. |
 | 5-10 min | Open this README, choose a lane, fork and clone. |
 | 10-15 min | Run `make doctor`; let your coding agent troubleshoot setup. |
 | 15-22 min | Sign into Qodo, connect GitHub, generate a Qodo API key. |
 | 22-28 min | Configure Qodo Skills safely with agent help. |
-| 28-34 min | Run Qodo rules and repo skills before coding. |
+| 28-34 min | Read repo-local rules, optionally compare Qodo rules, and use repo skills before coding. |
 | 34-43 min | Write behavior tests and implement the payment workflow change. |
 | 43-50 min | Run lint, typecheck, static analysis, tests, and pre-commit. |
 | 50-56 min | Commit, push, open PR, inspect Qodo review. |
@@ -116,6 +116,12 @@ Install repo-local workshop skills:
 make install-skills
 ```
 
+## Repo-Local Rules
+
+The default pre-coding context is committed in [rules/README.md](rules/README.md).
+Qodo portal rules are optional enrichment. Do not block the workshop on portal
+rule setup.
+
 ## Copy/Paste Agent Prompts
 
 ### Setup Prompt
@@ -129,7 +135,9 @@ Requirements:
 - Do not commit the API key.
 - Store it only in a safe local developer location or environment variable.
 - Install or verify Qodo Skills.
-- Confirm qodo-get-rules can fetch rules for this repository.
+- Read `AGENTS.md` and `rules/README.md`.
+- Select the relevant repo-local rule IDs for this task and explain why each applies.
+- Optionally compare those rules with qodo-get-rules if Qodo rules are available.
 - If my local environment is missing dependencies, diagnose and fix them.
 ```
 
@@ -140,7 +148,9 @@ Use the repo-local workshop planning skill to turn this task into:
 1. a high-level implementation plan
 2. a build-session execution plan
 
-Use the repo standards, Qodo rules, and payment-idempotency skill as constraints.
+Use `AGENTS.md`, `rules/README.md`, selected `PAY-*` rules, and the
+payment-idempotency skill as constraints.
+Treat qodo-get-rules as optional enrichment if available.
 Do not write code yet.
 ```
 

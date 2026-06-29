@@ -12,9 +12,10 @@ Never commit secrets.
 
 ## Qodo rules cannot load
 
-Continue with repo-local skills and visible standards:
+Continue with repo-local rules, repo-local skills, and visible standards:
 
 - `AGENTS.md`
+- `rules/README.md`
 - `skills/payment-idempotency/SKILL.md`
 - `.plan/workshop-payment-task/plan.md`
 
@@ -48,4 +49,3 @@ Open:
 ```text
 http://127.0.0.1:8000/docs
 ```
-

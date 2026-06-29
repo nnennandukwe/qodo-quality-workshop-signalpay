@@ -5,7 +5,8 @@
 - What quality constraints matter?
 
 ## Skills Used
-- Qodo rules:
+- Selected repo-local rules:
+- Optional Qodo rules:
 - Repo skills:
 - Local verification gates:
 
@@ -23,6 +24,7 @@
 - Lint:
 - Typecheck:
 - Security/static analysis:
+- Repo rule audit:
 - Qodo PR review:
 
 ## Failure and Recovery Rules
@@ -41,4 +43,3 @@
 
 ## Assumptions
 - ...
-

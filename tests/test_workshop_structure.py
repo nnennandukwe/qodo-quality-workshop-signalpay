@@ -44,3 +44,24 @@ def test_planning_templates_are_present() -> None:
 
     for path in expected:
         assert (ROOT / path).is_file(), path
+
+
+def test_workshop_rules_are_present() -> None:
+    expected = [
+        "rules/README.md",
+        "rules/payment-mutations.md",
+        "rules/auth-and-sessions.md",
+        "rules/api-and-events.md",
+        "rules/testing-and-gates.md",
+        "rules/secrets-and-workshop-safety.md",
+    ]
+
+    for path in expected:
+        assert (ROOT / path).is_file(), path
+
+
+def test_rules_index_lists_required_rule_ids() -> None:
+    rules_index = (ROOT / "rules/README.md").read_text(encoding="utf-8")
+
+    for number in range(1, 11):
+        assert f"PAY-{number:03d}" in rules_index

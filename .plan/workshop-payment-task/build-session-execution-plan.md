@@ -6,16 +6,18 @@ Use one short build session to implement a payment workflow change under quality
 ## Execution Steps
 1. Run `make doctor`.
 2. Run `make verify` on the clean starter.
-3. Run Qodo rules for the task.
-4. Ask the agent to summarize relevant repo skills.
-5. Write failing tests for the new behavior.
-6. Implement the smallest code change.
-7. Run targeted tests.
-8. Run `make verify`.
-9. Commit with a Conventional Commit.
-10. Push and open a PR.
-11. Inspect Qodo findings.
-12. Run PR Resolver or manually fix findings.
+3. Read `AGENTS.md` and `rules/README.md`.
+4. Select the relevant `PAY-*` repo-local rule IDs.
+5. Optionally compare with Qodo rules if available.
+6. Ask the agent to summarize relevant repo skills.
+7. Write failing tests for the new behavior.
+8. Implement the smallest code change.
+9. Run targeted tests.
+10. Run `make verify`.
+11. Commit with a Conventional Commit.
+12. Push and open a PR.
+13. Inspect Qodo findings.
+14. Run PR Resolver or manually fix findings.
 
 ## Test Plan
 - Add one success-path test.
@@ -31,6 +33,6 @@ Use one short build session to implement a payment workflow change under quality
 
 ## Completion Notes
 - Local verification:
+- Repo rules applied:
 - Qodo review:
 - Remediation:
-

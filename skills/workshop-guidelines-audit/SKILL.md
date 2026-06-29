@@ -1,6 +1,6 @@
 ---
 name: workshop-guidelines-audit
-description: "Audit the current diff against AGENTS.md, repo-local skills, Qodo rules, and workshop quality gates before opening a PR."
+description: "Audit the current diff against AGENTS.md, repo-local rules, repo-local skills, optional Qodo rules, and workshop quality gates before opening a PR."
 ---
 
 # Workshop Guidelines Audit
@@ -12,13 +12,16 @@ Use this skill before committing and before opening a PR.
 Read:
 
 - `AGENTS.md`
+- `rules/README.md`
+- selected linked rule documents under `rules/`
 - `skills/payment-idempotency/SKILL.md`
-- loaded Qodo rules
+- optional loaded Qodo rules
 - `.plan/workshop-payment-task/plan.md`
 
 ## Audit Checklist
 
 - Did the change preserve idempotency?
+- Did the plan identify the selected repo-local `PAY-*` rules?
 - Did the change preserve event contract shape?
 - Did tests cover success and failure paths?
 - Did local gates run?
@@ -44,4 +47,3 @@ Read:
 ```
 
 Do not modify code unless explicitly asked.
-
