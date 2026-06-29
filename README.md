@@ -122,6 +122,30 @@ The default pre-coding context is committed in [rules/README.md](rules/README.md
 Qodo portal rules are optional enrichment. Do not block the workshop on portal
 rule setup.
 
+## Hands-On Task: Payment Workflow Safety
+
+Your task is to add one small payment workflow: either a refund workflow or capture-retry handling. Choose one path for the workshop; do not try to build both.
+
+This is intentionally a small change with production-shaped risk. Payment mutations are where AI-generated code can look correct while quietly breaking system guarantees. A retry can emit a duplicate event, a missing idempotency key can create duplicate work, an auth check can happen after state changes, or a response can drift from the public API contract.
+
+The point of this exercise is not the refund or retry feature by itself. The point is to practice making an agent work inside a quality system before it writes code. You will force the agent to read local rules, select the `PAY-*` standards that apply, use the payment-idempotency skill, write behavior tests first, run deterministic gates, and then compare the result with Qodo review feedback.
+
+By the end, you should be able to see the difference between "the agent changed files" and "the agent produced a change that preserved the system contract." The expected output is a small PR with tests, verification evidence, and a review/remediation loop, not a large feature.
+
+Preserve these guarantees:
+
+- idempotency
+- auth scope checks
+- event contract shape
+- one-event-per-idempotency-key behavior
+
+Use this task as the input for the setup, planning, TDD, and verification prompts below.
+
+Read [docs/03-run-rules-before-coding.md](docs/03-run-rules-before-coding.md), then start from:
+
+- [.plan/workshop-payment-task/plan.md](.plan/workshop-payment-task/plan.md)
+- [.plan/workshop-payment-task/build-session-execution-plan.md](.plan/workshop-payment-task/build-session-execution-plan.md)
+
 ## Copy/Paste Agent Prompts
 
 ### Setup Prompt
@@ -136,7 +160,7 @@ Requirements:
 - Store it only in a safe local developer location or environment variable.
 - Install or verify Qodo Skills.
 - Read `AGENTS.md` and `rules/README.md`.
-- Select the relevant repo-local rule IDs for this task and explain why each applies.
+- Select the relevant repo-local rule IDs for the Hands-On Task and explain why each applies.
 - Optionally compare those rules with qodo-get-rules if Qodo rules are available.
 - If my local environment is missing dependencies, diagnose and fix them.
 ```
@@ -144,7 +168,7 @@ Requirements:
 ### Planning Prompt
 
 ```text
-Use the repo-local workshop planning skill to turn this task into:
+Use the repo-local workshop planning skill to turn the Hands-On Task above into:
 1. a high-level implementation plan
 2. a build-session execution plan
 
@@ -159,7 +183,7 @@ Do not write code yet.
 ```text
 Use the workshop TDD/BDD skill.
 
-Write the smallest failing tests first for the payment workflow change.
+Write the smallest failing tests first for the selected payment workflow path.
 Cover one happy path and at least one failure path.
 Do not implement production code until the failing tests prove the behavior gap.
 ```
@@ -173,20 +197,6 @@ If anything fails, classify the failure as formatting, linting, type checking, s
 Fix the issue without weakening the gate.
 Re-run verification.
 ```
-
-## Hands-On Task
-
-Add a refund or capture-retry workflow while preserving:
-
-- idempotency
-- auth scope checks
-- event contract shape
-- one-event-per-idempotency-key behavior
-
-Read [docs/03-run-rules-before-coding.md](docs/03-run-rules-before-coding.md), then start from:
-
-- [.plan/workshop-payment-task/plan.md](.plan/workshop-payment-task/plan.md)
-- [.plan/workshop-payment-task/build-session-execution-plan.md](.plan/workshop-payment-task/build-session-execution-plan.md)
 
 ## Local Verification Gates
 

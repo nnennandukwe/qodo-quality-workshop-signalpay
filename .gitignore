@@ -8,4 +8,4 @@ dist/
 *.egg-info/
 .env
 .qodo/
-
+.vscode/
