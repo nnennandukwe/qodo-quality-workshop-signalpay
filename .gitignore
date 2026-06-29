@@ -9,3 +9,5 @@ dist/
 .env
 .qodo/
 .vscode/
+.signalpay_idempotency_store.json
+.signalpay_idempotency_store.tmp
