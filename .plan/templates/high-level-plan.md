@@ -4,10 +4,24 @@
 - What problem are we solving?
 - What quality constraints matter?
 
-## Skills Used
+## Skill Routing
 - Selected repo-local rules:
 - Optional Qodo rules:
-- Repo skills:
+- Planning skill used: `workshop-plan-from-task`
+- Implementation entry skill: `workshop-tdd-bdd`
+- Conditional implementation skills:
+  - `payment-idempotency` when changing payment mutation workflows.
+  - `workshop-failure-path-testing` when adding or changing failure gates.
+- Pre-PR review skills:
+  - `workshop-guidelines-audit`
+  - optional `workshop-pythonic-review` for changed Python code
+- Post-review skill: optional `qodo-pr-resolver` after Qodo posts PR findings.
+- Exact next prompt after planning:
+  ```text
+  Use the workshop TDD/BDD skill and the plan files just created.
+  Write the smallest failing tests first for the selected behavior.
+  Do not implement production code until the failing tests prove the behavior gap.
+  ```
 - Local verification gates:
 
 ## Scope

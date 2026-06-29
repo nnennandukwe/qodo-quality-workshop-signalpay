@@ -6,6 +6,8 @@ standards in context. Qodo portal rules are optional enrichment.
 ## Goal
 
 Bring quality expectations into the planning and implementation loop, not only the final PR review.
+The planning output must route the attendee into the correct implementation
+skills before any tests or production code are written.
 
 ## Prompt
 
@@ -19,6 +21,8 @@ Add a refund or capture-retry workflow while preserving idempotency, auth scope 
 
 After selecting repo-local rules, optionally compare them with qodo-get-rules if Qodo rules are available.
 Summarize which standards must guide the implementation and tests.
+Then produce an implementation skill handoff that names workshop-tdd-bdd as the
+first implementation skill and includes the exact TDD prompt to run next.
 ```
 
 ## Local Skills to Use
@@ -35,4 +39,5 @@ Before coding, you should have:
 - optional Qodo rules loaded or documented as unavailable
 - a high-level plan
 - a build-session plan
-- failing tests identified or written
+- an implementation skill handoff that routes the next prompt to `workshop-tdd-bdd`
+- the exact TDD prompt to run before any production code

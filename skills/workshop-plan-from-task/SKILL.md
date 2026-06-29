@@ -26,7 +26,7 @@ Include:
 - Summary
 - Selected repo-local rule IDs
 - Optional Qodo rule status
-- Skills used
+- Skill routing, including the implementation entry skill and exact next prompt
 - Scope and out-of-scope items
 - Given/When/Then behavior scenarios
 - Rule-driven test expectations
@@ -39,6 +39,7 @@ Include:
 ## Guardrails
 
 - Do not write implementation code during planning.
+- Do not leave implementation skill selection for the attendee to infer.
 - Do not skip tests because the task seems small.
 - Do not weaken local gates.
 - Do not store secrets in plan files.

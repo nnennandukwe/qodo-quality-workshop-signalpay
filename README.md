@@ -226,15 +226,21 @@ Use the repo-local workshop planning skill to turn the Hands-On Task in README.m
 
 Use `AGENTS.md`, `rules/README.md`, selected `PAY-*` rules, and the
 payment-idempotency skill as constraints.
+The plan must include an implementation skill handoff that names the first
+implementation skill and the exact TDD prompt to run next.
 Treat qodo-get-rules as optional enrichment if available.
 Do not write code yet.
 ```
 
 ### TDD Prompt
 
+Run this only after the planning prompt has produced the high-level plan,
+build-session execution plan, and implementation skill handoff.
+
 ```text
 Use the workshop TDD/BDD skill.
 
+Use the plan files just created.
 Write the smallest failing tests first for the selected payment workflow path.
 Cover one happy path and at least one failure path.
 Do not implement production code until the failing tests prove the behavior gap.
